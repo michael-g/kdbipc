@@ -100,8 +100,6 @@ TEST(KdbIpcMessageReaderTest, TestKdbIpcDecompressorBlockReadSz)
 	// expectRqdFromHex(1+9, "0xf0" "010203040506070809"); // 1111.0000 thus 1,{2,3},{4,5},{6,7},{8,9},10
 }
 
-#define TMP_DIR "/tmp/"
-
 void rdIpc(const char *path, std::shared_ptr<int8_t> & ptr, ssize_t *sz)
 {
 	struct stat nfo = {0};
@@ -139,7 +137,8 @@ TEST(KdbIpcMessageReaderTest, TestRead10kQa)
 {
 	std::shared_ptr<int8_t> ipc{};
 	ssize_t len = -1;
-	rdIpc(TMP_DIR "tenKQa.zipc", ipc, &len);
+	// Assumes you run the tests from the build/test directory
+	rdIpc("../../test/tenKQa.zipc", ipc, &len);
 
 	if (-1 == len)
 		FAIL() << "Failed to read file tenKQa.zipc";
@@ -159,7 +158,8 @@ TEST(KdbIpcMessageReaderTest, TestRead10kQaViaMsgReader)
 {
 	std::shared_ptr<int8_t> ipc{};
 	ssize_t len = -1;
-	rdIpc(TMP_DIR "tenKQa.zipc", ipc, &len);
+	// Assumes you run the tests from the build/test directory
+	rdIpc("../../test/tenKQa.zipc", ipc, &len);
 
 	if (-1 == len)
 		FAIL() << "Failed to read file tenKQa.zipc";
