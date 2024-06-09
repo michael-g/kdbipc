@@ -1,11 +1,17 @@
 /*
 This file is part of the Mg KDB-IPC C++ Library (hereinafter "The Library").
 
-The Library is free software: you can redistribute it and/or modify it under the terms of the GNU Affero Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+The Library is free software: you can redistribute it and/or modify it under
+the terms of the GNU Affero Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
 
-The Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero Public License for more details.
+The Library is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU Affero Public License for more details.
 
-You should have received a copy of the GNU Affero Public License along with The Library. If not, see https://www.gnu.org/licenses/agpl.txt.
+You should have received a copy of the GNU Affero Public License along with The
+Library. If not, see https://www.gnu.org/licenses/agpl.txt.
 */
 
 #ifndef __mg7x_KdbType__H__
@@ -350,7 +356,7 @@ namespace time {
 	{
 		Minute() = delete;
 	public:
-	  // ...........00:00
+		// ...........00:00
 		// 0123456789012345
 		static BufIter<16> format_to(BufIter<16> out, int32_t val, bool suffix = true);
 	};
@@ -359,7 +365,7 @@ namespace time {
 	{
 		Second() = delete;
 	public:
-	  // ........00:00:00
+		// ........00:00:00
 		// 0123456789012345
 		static BufIter<16> format_to(BufIter<16> out, int32_t val, bool suffix = true);
 	};
@@ -368,7 +374,7 @@ namespace time {
 	{
 		Time() = delete;
 	public:
-	  // Interestingly (I need to get our more), if you convert max-int 0x7ffffff6 to a time
+		// Interestingly (I need to get our more), if you convert max-int 0x7ffffff6 to a time
 		// you get **:31:23:646; perhaps we don't need to allow for the overflow. The max-int
 		// value equates to 596 hours, min-int to 597.
 		// ....596:31:23.646
@@ -499,7 +505,7 @@ struct KdbSecondAtom : public KdbBase
 	WriteResult write(WriteBuf & buf) const override;
 };
 
-//-------------------------------------------------------------------------------- KdbSecondAtom
+//-------------------------------------------------------------------------------- KdbMinuteAtom
 struct KdbMinuteAtom : public KdbBase
 {
 	constexpr static KdbType kdb_type = KdbType::MINUTE_ATOM;
