@@ -1,3 +1,13 @@
+/*
+This file is part of the Mg KDB-IPC C++ Library (hereinafter "The Library").
+
+The Library is free software: you can redistribute it and/or modify it under the terms of the GNU Affero Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+The Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero Public License for more details.
+
+You should have received a copy of the GNU Affero Public License along with The Library. If not, see https://www.gnu.org/licenses/agpl.txt.
+*/
+
 #include <gtest/gtest.h>
 #include <memory>
 
@@ -131,121 +141,6 @@ TEST(KdbConnectedTest, TestTableWriter)
 		FAIL() << "Failed in KdbTable::ctor";
 	
 }
-
-// TEST(KdbConnectedTest, TestKdbUpdMessage1)
-// {
-// 	std::unique_ptr<KdbUpdMessage> msg = KdbUpdMessage::build(".u.upd", "trade", "psfj", 32);
-// 	if (!msg)
-// 		FAIL() << "Failure in KdbUpdMessage::build";
-	
-// 	KdbTimestampVector* time = msg->getCol<KdbTimestampVector>(0);
-// 	KdbSymbolVector* sym = msg->getCol<KdbSymbolVector>(1);
-// 	KdbFloatVector* price = msg->getCol<KdbFloatVector>(2);
-// 	KdbLongVector* size = msg->getCol<KdbLongVector>(3);
-
-// 	const size_t COL_COUNT = 4;
-// 	const size_t ROW_COUNT = 8;
-
-// 	for (size_t i = 0 ; i < ROW_COUNT ; i++) {
-// 		// use "n" as the column-type specifier to use a KdbTimespanVector instead
-// 		//time->append(time::Timespan::now(chr::current_zone()));
-// 		time->append(time::Timestamp::now());
-// 		sym->append("VOD.L");
-// 		price->append(185.0 + i);
-// 		size->append(42 + i);
-// 	}
-// 	// Which writes something like this, if you define .u.upd properly:
-// 	// time                          sym   price size
-// 	// ----------------------------------------------
-// 	// 2024.02.08D20:20:50.425890139 VOD.L 185   42  
-// 	// 2024.02.08D20:20:50.425891083 VOD.L 186   43  
-// 	// 2024.02.08D20:20:50.425891506 VOD.L 187   44  
-// 	// 2024.02.08D20:20:50.425891923 VOD.L 188   45  
-// 	// 2024.02.08D20:20:50.425892339 VOD.L 189   46  
-// 	// 2024.02.08D20:20:50.425892749 VOD.L 190   47  
-// 	// 2024.02.08D20:20:50.425893160 VOD.L 191   48  
-// 	// 2024.02.08D20:20:50.425893569 VOD.L 192   49
-// 	auto lda = [](KdbUpdMessage *msg) {
-// 		const uint64_t cap = msg->wireSize();
-// 		auto mem = std::make_unique<char[]>(cap);
-// 		WriteBuf buf{mem.get(), cap};
-// 		EXPECT_EQ(WriteResult::WR_OK, msg->write(buf));
-
-// 		return open_write_and_read<KdbList>("TestKdbUpdMessage1", mem.get(), static_cast<size_t>(cap));
-// 	};
-// 	std::unique_ptr<KdbList> rtn = lda(msg.get());
-// 	if (!rtn)
-// 		FAIL() << "Message should be complete";
-
-// 	// Check the structure of the outer message: expect a three-element list
-// 	EXPECT_EQ(3, rtn->count());
-
-// 	// Check the first element has type SYMBOL_ATOM and value ".u.upd"
-// 	EXPECT_TRUE(rtn->getIdx(0).has_value());
-// 	KdbObj *obj = rtn->getIdx(0).value();
-// 	EXPECT_EQ(KdbType::SYMBOL_ATOM, obj->type());
-// 	EXPECT_EQ(".u.upd", dynamic_cast<KdbSymbolAtom*>(obj)->asView());
-
-// 	// Check the second element is a symbol atom with value "trade"
-// 	EXPECT_TRUE(rtn->getIdx(1).has_value());
-// 	obj = rtn->getIdx(1).value();
-// 	EXPECT_EQ(KdbType::SYMBOL_ATOM, obj->type());
-// 	EXPECT_EQ("trade", dynamic_cast<KdbSymbolAtom*>(obj)->asView());
-
-// 	// Check the third element is a list
-// 	EXPECT_TRUE(rtn->getIdx(2).has_value());
-// 	obj = rtn->getIdx(2).value();
-// 	EXPECT_EQ(KdbType::LIST, obj->type());
-// 	KdbList *vals = dynamic_cast<KdbList*>(obj);
-
-// 	// Check the list content: expect four elements with the given types
-// 	EXPECT_EQ(COL_COUNT, vals->count());
-// 	size_t i = 0;
-// 	for (auto typ : std::array<KdbType, COL_COUNT>{ KdbType::TIMESTAMP_VECTOR, KdbType::SYMBOL_VECTOR, KdbType::FLOAT_VECTOR, KdbType::LONG_VECTOR }) {
-// 		EXPECT_EQ(typ, vals->getIdx(i++).value()->type());
-// 	}
-
-// 	EXPECT_EQ(ROW_COUNT, dynamic_cast<KdbSequence*>(vals->getIdx(0).value())->count());
-
-// 	// Check the list content matches the input data
-// 	for (size_t i = 0 ; i < ROW_COUNT ; i++) {
-// 		EXPECT_EQ(time->getIdx(i), dynamic_cast<KdbTimestampVector*>(vals->getIdx(0).value())->getIdx(i));
-// 		EXPECT_EQ(sym->getIdx(i), dynamic_cast<KdbSymbolVector*>(vals->getIdx(1).value())->getIdx(i));
-// 		// NB we're comparing floating-point values here, seems to work without specifying an epsilon
-// 		EXPECT_EQ(price->getIdx(i), dynamic_cast<KdbFloatVector*>(vals->getIdx(2).value())->getIdx(i));
-// 		EXPECT_EQ(size->getIdx(i), dynamic_cast<KdbLongVector*>(vals->getIdx(3).value())->getIdx(i));
-// 	}
-
-// 	msg->clear();
-
-// 	for (size_t i = 0 ; i < ROW_COUNT ; i++) {
-// 		// use "n" as the column-type specifier to use a KdbTimespanVector instead
-// 		//time->append(time::Timespan::now(chr::current_zone()));
-// 		time->append(time::Timestamp::now());
-// 		sym->append("AZN.L");
-// 		price->append(330.0 + i);
-// 		size->append(61 + i);
-// 	}
-
-// 	// destroy the previous IPC message we've read, explictly
-// 	rtn.reset();
-
-// 	rtn = lda(msg.get());
-// 	if (!rtn)
-// 		FAIL() << "Message should be complete";
-
-//   // Let 'vals' point to the new list in the IPC response
-// 	vals = dynamic_cast<KdbList*>(rtn->getIdx(2).value());
-// 	EXPECT_EQ(ROW_COUNT, dynamic_cast<KdbTimestampVector*>(vals->getIdx(0).value())->count());
-
-// 	// Check the list content matches the input data
-// 	for (size_t i = 0 ; i < ROW_COUNT ; i++) {
-// 		EXPECT_EQ(time->getIdx(i), dynamic_cast<KdbTimestampVector*>(vals->getIdx(0).value())->getIdx(i));
-// 		EXPECT_EQ(sym->getIdx(i), dynamic_cast<KdbSymbolVector*>(vals->getIdx(1).value())->getIdx(i));
-// 		EXPECT_EQ(price->getIdx(i), dynamic_cast<KdbFloatVector*>(vals->getIdx(2).value())->getIdx(i));
-// 		EXPECT_EQ(size->getIdx(i), dynamic_cast<KdbLongVector*>(vals->getIdx(3).value())->getIdx(i));
-// 	}
-// }
 
 } // end namespace mg7x::test
 
